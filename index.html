@@ -6,88 +6,133 @@
     <title>Top Secret Access</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { height: 100vh; background: #0b0914; display: flex; justify-content: center; align-items: center; color: white; overflow-x: hidden; }
+        body { height: 100vh; background: #05020a; display: flex; justify-content: center; align-items: center; color: white; overflow: hidden; position: relative; }
         
-        /* Lock Screen */
-        #lock-screen { text-align: center; position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #0b0914; z-index: 10; }
-        h2 { font-size: 1.8rem; margin-bottom: 20px; color: #ff758c; text-shadow: 0 0 15px rgba(255,117,140,0.4); }
-        input { padding: 14px; font-size: 1.3rem; border: 2px solid #ff758c; border-radius: 30px; text-align: center; margin-bottom: 20px; width: 260px; background: rgba(255,255,255,0.05); color: white; outline: none; }
-        button { padding: 14px 35px; font-size: 1.1rem; background: linear-gradient(45deg, #ff758c, #ff7eb3); border: none; color: white; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(255,117,140,0.3); transition: 0.3s; }
-        button:hover { transform: scale(1.05); }
-        #error-msg { color: #ff4757; margin-top: 15px; font-weight: bold; }
+        /* The Matrix Canvas Background */
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
-        /* Step 1: Interactive Envelope Container */
-        #envelope-container { display: none; text-align: center; perspective: 1000px; z-index: 5; }
-        .envelope { width: 280px; height: 180px; background: #ff758c; position: relative; border-radius: 0 0 10px 10px; cursor: pointer; box-shadow: 0 15px 30px rgba(0,0,0,0.5); margin: 20px auto; transition: 0.5s; }
-        .envelope::before { content: ''; position: absolute; top: 0; left: 0; border-left: 140px solid transparent; border-right: 140px solid transparent; border-top: 100px solid #ff9ebb; transform-origin: top; transition: transform 0.5s; z-index: 3; }
+        /* Shared Screen Layout to stay on top of canvas */
+        .container-box { position: relative; z-index: 5; background: rgba(11, 9, 20, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255, 117, 140, 0.2); padding: 35px; border-radius: 20px; box-shadow: 0 0 30px rgba(255, 117, 140, 0.2); text-align: center; max-width: 450px; width: 90%; }
+
+        /* Lock Screen */
+        #lock-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        h2 { font-size: 1.6rem; margin-bottom: 20px; color: #ff758c; text-shadow: 0 0 15px rgba(255,117,140,0.6); font-family: monospace; letter-spacing: 2px; }
+        input { padding: 14px; font-size: 1.3rem; border: 2px solid #ff758c; border-radius: 30px; text-align: center; margin-bottom: 20px; width: 260px; background: rgba(0,0,0,0.6); color: #ff9ebb; outline: none; box-shadow: 0 0 10px rgba(255,117,140,0.2); font-family: monospace; }
+        button { padding: 14px 35px; font-size: 1.1rem; background: linear-gradient(45deg, #ff758c, #ff7eb3); border: none; color: white; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(255,117,140,0.4); transition: 0.3s; }
+        button:hover { transform: scale(1.05); box-shadow: 0 5px 25px rgba(255,117,140,0.7); }
+        #error-msg { color: #ff4757; margin-top: 15px; font-weight: bold; font-family: monospace; }
+
+        /* Interactive Envelope Step */
+        #envelope-container { display: none; }
+        .envelope { width: 260px; height: 160px; background: #ff758c; position: relative; border-radius: 0 0 10px 10px; cursor: pointer; box-shadow: 0 15px 30px rgba(0,0,0,0.5); margin: 20px auto; transition: 0.5s; }
+        .envelope::before { content: ''; position: absolute; top: 0; left: 0; border-left: 130px solid transparent; border-right: 130px solid transparent; border-top: 90px solid #ff9ebb; transform-origin: top; transition: transform 0.5s; z-index: 3; }
         .envelope.open::before { transform: rotateX(180deg); z-index: 1; }
         .envelope-text { position: absolute; width: 100%; bottom: 20px; text-align: center; font-weight: bold; color: white; font-size: 1.1rem; letter-spacing: 1px; }
 
-        /* Step 2: The Letter Letter Box */
-        #letter-box { display: none; max-width: 450px; width: 90%; background: #ffffff; color: #2d3436; padding: 30px; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); z-index: 6; text-align: left; position: relative; animation: slideUp 1s ease forwards; }
-        #letter-text { font-size: 1.1rem; line-height: 1.8; font-style: italic; min-height: 150px; }
-        .next-btn { display: none; margin: 20px auto 0 auto; background: #ff758c; color: white; }
+        /* Dynamic Typewriter Letter Box */
+        #letter-box { display: none; background: #ffffff; color: #1a1a24; text-align: left; }
+        #letter-text { font-size: 1.1rem; line-height: 1.8; font-style: italic; min-height: 150px; font-weight: 500; }
+        .next-btn { display: none; margin: 25px auto 0 auto; background: #ff758c; color: white; }
 
-        /* Step 3: Video & Photo Gallery Grid */
-        #gallery-screen { display: none; width: 100%; max-width: 800px; height: 90vh; overflow-y: auto; padding: 20px; text-align: center; z-index: 5; }
-        .gallery-title { font-size: 2.5rem; color: #ff758c; margin-bottom: 25px; text-shadow: 0 0 15px rgba(255,117,140,0.4); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .media-card { background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .media-card img, .media-card video { width: 100%; height: 250px; object-fit: cover; display: block; }
-        .media-desc { padding: 12px; font-size: 0.95rem; color: #f0e6ef; background: rgba(0,0,0,0.4); }
-
-        /* Animations */
-        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .heart { position: absolute; font-size: 2.5rem; pointer-events: none; animation: floatUp 4s linear infinite; bottom: -60px; z-index: 1; }
-        @keyframes floatUp { 0% { transform: translateY(0) scale(0.8); opacity: 1; } 100% { transform: translateY(-115vh) scale(1.2); opacity: 0; } }
+        /* Media Display & Final Wishes Screen */
+        #gallery-screen { display: none; max-width: 600px; max-height: 85vh; overflow-y: auto; }
+        .gallery-title { font-size: 2.2rem; color: #ff758c; margin-bottom: 20px; text-shadow: 0 0 15px rgba(255,117,140,0.6); }
+        .media-card { background: rgba(0, 0, 0, 0.4); border-radius: 15px; overflow: hidden; border: 1px solid rgba(255,117,140,0.3); margin-top: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .media-card img { width: 100%; height: auto; max-height: 350px; object-fit: cover; display: block; }
+        .media-desc { padding: 15px; font-size: 1.1rem; color: #f0e6ef; line-height: 1.6; }
     </style>
 </head>
 <body>
 
-    <div id="lock-screen">
-        <h2>🔒 ENTER ACCESS CODE</h2>
-        <input type="text" id="password" pattern="[0-9]*" inputmode="numeric" placeholder="DDMMYYYY">
-        <button id="unlockBtn">Unlock Surprise</button>
-        <div id="error-msg"></div>
-    </div>
+    <!-- BACKGROUND MATRIX EFFECT -->
+    <canvas id="matrixCanvas"></canvas>
 
-    <div id="envelope-container">
-        <h2 style="margin-bottom: 10px;">You received a letter! 💌</h2>
-        <p style="color: #bfaec2; margin-bottom: 20px;">Click the envelope to open it</p>
-        <div class="envelope" id="mainEnvelope">
-            <div class="envelope-text">FOR MEGHAPPI ❤️</div>
-        </div>
-    </div>
-
-    <div id="letter-box">
-        <div id="letter-text"></div>
-        <button class="next-btn" id="toGalleryBtn">See Our Memories ➔</button>
-    </div>
-
-    <div id="gallery-screen">
-        <h1 class="gallery-title">Happy Birthday, MEGHAPPI! 🎉💖</h1>
-        <p style="font-size: 1.2rem; margin-bottom: 30px; color: #f0e6ef;">Here is to another beautiful year of your stunning smile! ✨</p>
+    <!-- CONTENT BOX CONTAINER -->
+    <div class="container-box" id="mainCard">
         
-        <div class="grid">
-            <div class="media-card">
-                <img src="https://kommodo.ai/i/4ckjNJUsjAhM5lpGM3ci" alt="Memory 1">
-                <div class="media-desc">The prettiest girl in the universe 😍</div>
-            </div>
+        <!-- 1. LOCK SCREEN -->
+        <div id="lock-screen">
+            <h2>🔒 DECRYPT_ACCESS_CODE</h2>
+            <input type="text" id="password" pattern="[0-9]*" inputmode="numeric" placeholder="DDMMYYYY">
+            <button id="unlockBtn">Bypass Lock</button>
+            <div id="error-msg"></div>
+        </div>
 
-            <div class="media-card">
-                <video src="https://www.image2url.com/r2/default/videos/1782911006469-7150c4ac-8614-42db-8802-fffa1b6b6553.mp4" controls></video>
-                <div class="media-desc">Every moment with you is favorite 🎥❤️</div>
-            </div>
-
-            <div class="media-card">
-                <img src="https://kommodo.ai/i/4ckjNJUsjAhM5lpGM3ci" alt="Memory 3">
-                <div class="media-desc">Thank you for bringing so much magic into my world ✨</div>
+        <!-- 2. INTERACTIVE ENVELOPE -->
+        <div id="envelope-container">
+            <h2 style="margin-bottom: 10px;">Packet Received! 💌</h2>
+            <p style="color: #bfaec2; margin-bottom: 20px; font-size: 0.95rem;">Tap envelope to extract text file</p>
+            <div class="envelope" id="mainEnvelope">
+                <div class="envelope-text">DEAR MEGHAPPI ❤️</div>
             </div>
         </div>
+
+        <!-- 3. MATRIX TYPEWRITER LETTER -->
+        <div id="letter-box">
+            <div id="letter-text"></div>
+            <button class="next-btn" id="toGalleryBtn">View Decrypted Media ➔</button>
+        </div>
+
+        <!-- 4. FINAL SURPRISE & GALLERY -->
+        <div id="gallery-screen">
+            <h1 class="gallery-title">Happy Birthday, MEGHAPPI! 🎉💖</h1>
+            <p style="font-size: 1.1rem; color: #f0e6ef;">System decoded: You are the most beautiful girl in the world. ✨</p>
+            
+            <div class="media-card">
+                <!-- Direct stock layout image you can keep or replace later -->
+                <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600" alt="Memory">
+                <div class="media-desc">
+                    To the one who holds the master key to my heart. Every single second with you is a perfect loop. Have the most beautiful birthday love! ❤️🎂
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // Letter Message text config
+        // --- MATRIX RAIN ANIMATION CODE ---
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Matrix uses Binary, Hearts, and Love characters
+        const matrixChars = "010101❤️💖10101💕✨LOVE101".split("");
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            // Adds slight transparency overlay to leave trail strings
+            ctx.fillStyle = "rgba(5, 2, 10, 0.08)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Matrix text styling: Glowing pink/red hues instead of traditional green
+            ctx.fillStyle = "#ff5376"; 
+            ctx.font = fontSize + "px monospace";
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                
+                // Randomly alternate colors between deep pink and bright white-pink for matrix depth
+                ctx.fillStyle = Math.random() > 0.95 ? "#fff" : (Math.random() > 0.5 ? "#ff758c" : "#b5334e");
+                
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 33); // Animation loop speed
+
+        // --- INTERACTIVE CARD LOGIC ---
         const messageText = "Dearest Meghappi... \n\nHappy Birthday to the most amazing girl in the entire universe. 🎂✨ \n\nYou make every single day brighter just by being in it. Your laughter is my favorite sound, and your happiness means everything to me. Here's to celebrating you today, your beautiful heart, and making countless more gorgeous memories together. \n\nI love you! ❤️";
         
         let index = 0;
@@ -96,52 +141,39 @@
                 let char = messageText.charAt(index);
                 document.getElementById("letter-text").innerHTML += char === "\n" ? "<br>" : char;
                 index++;
-                setTimeout(typeWriter, 50); // Speed of text typing
+                setTimeout(typeWriter, 45); 
             } else {
-                document.getElementById("toGalleryBtn").style.display = "block"; // Show next button when finished
+                document.getElementById("toGalleryBtn").style.display = "block";
             }
         }
 
-        // 1. Password check
+        // 1. Password Verification
         document.getElementById("unlockBtn").onclick = function() {
             var val = document.getElementById("password").value.trim();
             if (val === "18012007") {
                 document.getElementById("lock-screen").style.display = "none";
                 document.getElementById("envelope-container").style.display = "block";
-                startHearts();
             } else {
-                document.getElementById("error-msg").innerText = "❌ Try again, love!";
+                document.getElementById("error-msg").innerText = "❌ ACCESS_DENIED: Try again, love!";
             }
         };
 
-        // 2. Open Envelope click
+        // 2. Open Letter Envelope Click
         document.getElementById("mainEnvelope").onclick = function() {
             this.classList.add("open");
             setTimeout(() => {
                 document.getElementById("envelope-container").style.display = "none";
                 document.getElementById("letter-box").style.display = "block";
-                typeWriter(); // Start typing letter
-            }, 1000);
+                typeWriter();
+            }, 800);
         };
 
-        // 3. Move to Gallery Grid click
+        // 3. Switch to final wishes screen
         document.getElementById("toGalleryBtn").onclick = function() {
             document.getElementById("letter-box").style.display = "none";
             document.getElementById("gallery-screen").style.display = "block";
+            document.getElementById("mainCard").style.maxWidth = "600px"; // make room for image
         };
-
-        // Continuous Floating Hearts
-        function startHearts() {
-            setInterval(function() {
-                var heart = document.createElement("div");
-                heart.className = "heart";
-                heart.innerHTML = ["❤️","💖","✨","💕"][Math.floor(Math.random() * 4)];
-                heart.style.left = (Math.random() * 100) + "vw";
-                heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
-                document.body.appendChild(heart);
-                setTimeout(function() { heart.remove(); }, 4000);
-            }, 250);
-        }
     </script>
 </body>
 </html>

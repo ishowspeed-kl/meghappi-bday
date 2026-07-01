@@ -5,114 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Top Secret Access</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 
-'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body, html { height: 100%; background: #0f0c20; overflow: hidden; 
-display: flex; justify-content: center; align-items: center; color: white; 
-}
-        
-        /* Lock Screen Styling */
-        #lock-screen { text-align: center; z-index: 10; transition: all 1s 
-ease; background: radial-gradient(circle, #1a153a 0%, #0f0c20 100%); 
-width: 100%; height: 100%; display: flex; flex-direction: column; 
-justify-content: center; align-items: center; position: absolute; }
-        h2 { font-size: 2rem; margin-bottom: 20px; letter-spacing: 2px; 
-color: #ff758c; text-shadow: 0 0 10px rgba(255,117,140,0.5); }
-        input { padding: 12px 20px; font-size: 1.2rem; border: 2px solid 
-#ff758c; background: transparent; color: white; border-radius: 25px; 
-text-align: center; outline: none; width: 250px; margin-bottom: 15px; 
-transition: 0.3s; }
-        input:focus { box-shadow: 0 0 15px #ff758c; }
-        button { padding: 12px 30px; font-size: 1rem; background: #ff758c; 
-border: none; color: white; border-radius: 25px; cursor: pointer; 
-font-weight: bold; transition: 0.3s; }
-        button:hover { background: #ff7eb3; transform: scale(1.05); 
-box-shadow: 0 0 15px #ff7eb3; }
-        #error-msg { color: #ff4757; margin-top: 10px; min-height: 20px; 
-font-size: 0.9rem; }
-
-        /* Surprise Content Styling */
-        #content { opacity: 0; transform: scale(0.8); transition: all 1.5s 
-ease; text-align: center; pointer-events: none; max-width: 600px; padding: 
-40px; border-radius: 20px; background: rgba(255, 255, 255, 0.1); 
-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); 
-box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        #content.reveal { opacity: 1; transform: scale(1); pointer-events: 
-auto; }
-        h1 { font-size: 3.5rem; background: linear-gradient(45deg, 
-#ff758c, #ff7eb3); -webkit-background-clip: text; -webkit-text-fill-color: 
-transparent; margin-bottom: 20px; }
-        p { font-size: 1.3rem; line-height: 1.6; color: #f0e6ef; 
-margin-bottom: 30px; }
-        
-        /* Floating Hearts */
-        .heart { position: absolute; font-size: 2rem; color: rgba(255, 
-117, 140, 0.6); pointer-events: none; animation: floatUp 4s linear 
-infinite; bottom: -50px; }
-        @keyframes floatUp {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-105vh) rotate(360deg); opacity: 
-0; }
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { height: 100vh; background: #0b0914; display: flex; justify-content: center; align-items: center; color: white; overflow: hidden; }
+        #lock-screen { text-align: center; position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #0b0914; z-index: 10; }
+        h2 { font-size: 1.8rem; margin-bottom: 20px; color: #ff758c; }
+        input { padding: 14px; font-size: 1.3rem; border: 2px solid #ff758c; border-radius: 30px; text-align: center; margin-bottom: 20px; width: 260px; background: rgba(255,255,255,0.05); color: white; outline: none; }
+        button { padding: 14px 35px; font-size: 1.1rem; background: linear-gradient(45deg, #ff758c, #ff7eb3); border: none; color: white; border-radius: 30px; cursor: pointer; font-weight: bold; }
+        #content { display: none; text-align: center; max-width: 550px; padding: 40px; border-radius: 20px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        h1 { font-size: 3.5rem; background: linear-gradient(45deg, #ff758c, #ff7eb3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+        p { font-size: 1.3rem; line-height: 1.7; color: #f0e6ef; }
+        #error-msg { color: #ff4757; margin-top: 15px; font-weight: bold; }
+        .heart { position: absolute; font-size: 2.5rem; pointer-events: none; animation: floatUp 4s linear infinite; bottom: -60px; }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(0.8); opacity: 1; } 100% { transform: translateY(-115vh) scale(1.2); opacity: 0; } }
     </style>
 </head>
 <body>
-
-    <!-- LOCK SCREEN -->
     <div id="lock-screen">
-        <h2>ENTER ACCESS CODE</h2>
-        <input type="password" id="password" placeholder="Hint: Your DOB 
-(DDMMYYYY)">
-        <button onclick="checkPassword()">Unlock</button>
+        <h2>🔒 ENTER ACCESS CODE</h2>
+        <!-- Added explicit numeric triggers for phones -->
+        <input type="text" id="password" pattern="[0-9]*" inputmode="numeric" placeholder="DDMMYYYY">
+        <button id="unlockBtn">Unlock Surprise</button>
         <div id="error-msg"></div>
     </div>
 
-    <!-- SURPRISE CONTENT -->
     <div id="content">
         <h1>Happy Birthday, MEGHAPPI! 🎉</h1>
-        <p>To the most incredible girl in the universe. You make every 
-single day brighter just by being in it. Here's to celebrating you today 
-and always! ❤️</p>
-        <button onclick="alert('I love you to the moon and back, MEGHAPPI! 
-🌙✨')">Click for a Hug</button>
+        <p>To the most incredible girl in the universe. You make every single day brighter just by being in it. Here is to you, your beautiful smile, and another amazing year ahead! ❤️</p>
     </div>
 
     <script>
-        function checkPassword() {
-            const userInput = 
-document.getElementById("password").value.trim();
-            const lockScreen = document.getElementById("lock-screen");
-            const content = document.getElementById("content");
-            const errorMsg = document.getElementById("error-msg");
-
-            // Password is set to her exact DOB: 18012007
-            if (userInput === "18012007") {
-                lockScreen.style.opacity = "0";
-                setTimeout(() => {
-                    lockScreen.style.display = "none";
-                    content.classList.add("reveal");
-                    setInterval(createHeart, 300);
-                }, 1000);
+        document.getElementById("unlockBtn").onclick = function() {
+            var val = document.getElementById("password").value.trim();
+            
+            // This checks strictly for her birthday digits
+            if (val === "18012007") {
+                document.getElementById("lock-screen").style.display = "none";
+                document.getElementById("content").style.display = "block";
+                
+                // Starts the heart animations instantly
+                setInterval(function() {
+                    var heart = document.createElement("div");
+                    heart.className = "heart";
+                    heart.innerHTML = ["❤️","💖","✨","💕"][Math.floor(Math.random() * 4)];
+                    heart.style.left = (Math.random() * 100) + "vw";
+                    document.body.appendChild(heart);
+                    setTimeout(function() { heart.remove(); }, 4000);
+                }, 200);
             } else {
-                errorMsg.innerText = "❌ Incorrect code. Try again, 
-love!";
-                document.getElementById("password").value = "";
+                document.getElementById("error-msg").innerText = "❌ Try again, love!";
             }
-        }
-
-        function createHeart() {
-            const heart = document.createElement("div");
-            heart.classList.add("heart");
-            heart.innerHTML = "❤️";
-            heart.style.left = Math.random() * 100 + "vw";
-            heart.style.animationDuration = Math.random() * 2 + 3 + "s"; 
-            heart.style.fontSize = Math.random() * 20 + 20 + "px"; 
-            document.body.appendChild(heart);
-
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
-        }
+        };
     </script>
 </body>
 </html>

@@ -8,11 +8,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         body { height: 100vh; background: #05020a; display: flex; justify-content: center; align-items: center; color: white; overflow: hidden; position: relative; }
         
-        /* The Matrix Canvas Background */
+        /* The 3D Heart Canvas Background */
         canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
-        /* Shared Screen Layout to stay on top of canvas */
-        .container-box { position: relative; z-index: 5; background: rgba(11, 9, 20, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255, 117, 140, 0.2); padding: 35px; border-radius: 20px; box-shadow: 0 0 30px rgba(255, 117, 140, 0.2); text-align: center; max-width: 450px; width: 90%; }
+        /* Content Box Container staying on top */
+        .container-box { position: relative; z-index: 5; background: rgba(11, 9, 20, 0.88); backdrop-filter: blur(8px); border: 1px solid rgba(255, 117, 140, 0.2); padding: 35px; border-radius: 20px; box-shadow: 0 0 30px rgba(255, 117, 140, 0.2); text-align: center; max-width: 450px; width: 90%; transition: all 0.5s ease; }
 
         /* Lock Screen */
         #lock-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; }
@@ -34,105 +34,112 @@
         #letter-text { font-size: 1.1rem; line-height: 1.8; font-style: italic; min-height: 150px; font-weight: 500; }
         .next-btn { display: none; margin: 25px auto 0 auto; background: #ff758c; color: white; }
 
-        /* Media Display & Final Wishes Screen */
-        #gallery-screen { display: none; max-width: 600px; max-height: 85vh; overflow-y: auto; }
+        /* Final Display Wishes Screen */
+        #gallery-screen { display: none; }
         .gallery-title { font-size: 2.2rem; color: #ff758c; margin-bottom: 20px; text-shadow: 0 0 15px rgba(255,117,140,0.6); }
-        .media-card { background: rgba(0, 0, 0, 0.4); border-radius: 15px; overflow: hidden; border: 1px solid rgba(255,117,140,0.3); margin-top: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .media-card img { width: 100%; height: auto; max-height: 350px; object-fit: cover; display: block; }
-        .media-desc { padding: 15px; font-size: 1.1rem; color: #f0e6ef; line-height: 1.6; }
+        p { font-size: 1.1rem; color: #f0e6ef; line-height: 1.6; }
     </style>
 </head>
 <body>
 
-    <!-- BACKGROUND MATRIX EFFECT -->
-    <canvas id="matrixCanvas"></canvas>
+    <canvas id="heartCanvas"></canvas>
 
-    <!-- CONTENT BOX CONTAINER -->
     <div class="container-box" id="mainCard">
         
-        <!-- 1. LOCK SCREEN -->
         <div id="lock-screen">
-            <h2>🔒 DECRYPT_ACCESS_CODE</h2>
+            <h2>🔒 ENTER ACCESS CODE</h2>
             <input type="text" id="password" pattern="[0-9]*" inputmode="numeric" placeholder="DDMMYYYY">
-            <button id="unlockBtn">Bypass Lock</button>
+            <button id="unlockBtn">Unlock</button>
             <div id="error-msg"></div>
         </div>
 
-        <!-- 2. INTERACTIVE ENVELOPE -->
         <div id="envelope-container">
-            <h2 style="margin-bottom: 10px;">Packet Received! 💌</h2>
-            <p style="color: #bfaec2; margin-bottom: 20px; font-size: 0.95rem;">Tap envelope to extract text file</p>
+            <h2 style="margin-bottom: 10px;">Message Received! 💌</h2>
+            <p style="color: #bfaec2; margin-bottom: 20px; font-size: 0.95rem;">Tap envelope to open</p>
             <div class="envelope" id="mainEnvelope">
-                <div class="envelope-text">DEAR MEGHAPPI ❤️</div>
+                <div class="envelope-text">FOR MEGHAPPI ❤️</div>
             </div>
         </div>
 
-        <!-- 3. MATRIX TYPEWRITER LETTER -->
         <div id="letter-box">
             <div id="letter-text"></div>
-            <button class="next-btn" id="toGalleryBtn">View Decrypted Media ➔</button>
+            <button class="next-btn" id="toGalleryBtn">Click for Final Surprise ➔</button>
         </div>
 
-        <!-- 4. FINAL SURPRISE & GALLERY -->
         <div id="gallery-screen">
             <h1 class="gallery-title">Happy Birthday, MEGHAPPI! 🎉💖</h1>
-            <p style="font-size: 1.1rem; color: #f0e6ef;">System decoded: You are the most beautiful girl in the world. ✨</p>
-            
-            <div class="media-card">
-                <!-- Direct stock layout image you can keep or replace later -->
-                <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600" alt="Memory">
-                <div class="media-desc">
-                    To the one who holds the master key to my heart. Every single second with you is a perfect loop. Have the most beautiful birthday love! ❤️🎂
-                </div>
-            </div>
+            <p>Look at the background! A mathematical matrix calculated completely out of love strings just for you. You make my entire universe spin. Have the most magical day! ❤️🎂</p>
         </div>
 
     </div>
 
     <script>
-        // --- MATRIX RAIN ANIMATION CODE ---
-        const canvas = document.getElementById('matrixCanvas');
+        // --- 3D SPINNING TEXT HEART CORE ENGINE ---
+        const canvas = document.getElementById('heartCanvas');
         const ctx = canvas.getContext('2d');
 
-        function resizeCanvas() {
+        function resize() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+        resize();
+        window.addEventListener('resize', resize);
 
-        // Matrix uses Binary, Hearts, and Love characters
-        const matrixChars = "010101❤️💖10101💕✨LOVE101".split("");
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
+        // This is the phrase that constructs the entire mathematical shape!
+        const textPhrase = " I Love U Meghappi ";
+        let phraseIndex = 0;
+        let rotationAngle = 0;
+        let isHeartRevealed = false; // Controls background transformation state
 
-        function drawMatrix() {
-            // Adds slight transparency overlay to leave trail strings
-            ctx.fillStyle = "rgba(5, 2, 10, 0.08)";
+        function drawSpinningHeart() {
+            ctx.fillStyle = "rgba(5, 2, 10, 0.3)"; // Creates a motion blur trailing effect
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Matrix text styling: Glowing pink/red hues instead of traditional green
-            ctx.fillStyle = "#ff5376"; 
-            ctx.font = fontSize + "px monospace";
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            // Scaler adjusts dynamically for mobile versus computer screen widths
+            const baseScale = Math.min(canvas.width, canvas.height) / (isHeartRevealed ? 22 : 32);
 
-            for (let i = 0; i < drops.length; i++) {
-                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                
-                // Randomly alternate colors between deep pink and bright white-pink for matrix depth
-                ctx.fillStyle = Math.random() > 0.95 ? "#fff" : (Math.random() > 0.5 ? "#ff758c" : "#b5334e");
-                
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            ctx.font = "bold 11px monospace";
+            phraseIndex = 0;
 
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
+            // Generate parametric layout mapping coordinates
+            for (let angle = 0; angle < Math.PI * 2; angle += 0.03) {
+                
+                // Classic heart shape geometry equations
+                const xCoordinate = 16 * Math.pow(Math.sin(angle), 3);
+                const yCoordinate = -(13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle));
+
+                // Apply 3D rotation math simulation over time
+                const rotatedX = xCoordinate * Math.cos(rotationAngle) - yCoordinate * Math.sin(rotationAngle) * 0.3;
+                const rotatedY = yCoordinate * Math.cos(rotationAngle) * 0.8 + xCoordinate * Math.sin(rotationAngle) * 0.2;
+
+                // Position tracking vectors
+                const screenX = centerX + rotatedX * baseScale;
+                const screenY = centerY + rotatedY * baseScale;
+
+                // Grab character string segment looping consecutively
+                const charToPrint = textPhrase[phraseIndex % textPhrase.length];
+                phraseIndex++;
+
+                // Give it a glowing neon pink styling look
+                ctx.fillStyle = `hsl(${340 + Math.sin(rotationAngle + angle) * 15}, 100%, 70%)`;
+                ctx.shadowColor = "#ff758c";
+                ctx.shadowBlur = isHeartRevealed ? 8 : 2;
+
+                ctx.fillText(charToPrint, screenX, screenY);
             }
-        }
-        setInterval(drawMatrix, 33); // Animation loop speed
 
-        // --- INTERACTIVE CARD LOGIC ---
+            rotationAngle += 0.015; // Speed of the rotation loop
+            requestAnimationFrame(drawSpinningHeart);
+        }
+        
+        // Start rendering background computation loop right away silently
+        requestAnimationFrame(drawSpinningHeart);
+
+
+        // --- INTERACTIVE SYSTEM CARD LOGIC ---
         const messageText = "Dearest Meghappi... \n\nHappy Birthday to the most amazing girl in the entire universe. 🎂✨ \n\nYou make every single day brighter just by being in it. Your laughter is my favorite sound, and your happiness means everything to me. Here's to celebrating you today, your beautiful heart, and making countless more gorgeous memories together. \n\nI love you! ❤️";
         
         let index = 0;
@@ -154,7 +161,7 @@
                 document.getElementById("lock-screen").style.display = "none";
                 document.getElementById("envelope-container").style.display = "block";
             } else {
-                document.getElementById("error-msg").innerText = "❌ ACCESS_DENIED: Try again, love!";
+                document.getElementById("error-msg").innerText = "❌ Password incorrect! Try again, love!";
             }
         };
 
@@ -168,11 +175,15 @@
             }, 800);
         };
 
-        // 3. Switch to final wishes screen
+        // 3. Switch to final wishes screen and change heart state
         document.getElementById("toGalleryBtn").onclick = function() {
             document.getElementById("letter-box").style.display = "none";
             document.getElementById("gallery-screen").style.display = "block";
-            document.getElementById("mainCard").style.maxWidth = "600px"; // make room for image
+            
+            // Shrink the middle box to let the massive text-heart pop out!
+            document.getElementById("mainCard").style.background = "rgba(11, 9, 20, 0.4)";
+            document.getElementById("mainCard").style.transform = "translateY(-50px)";
+            isHeartRevealed = true; // Makes the text heart grow huge and glow intensely
         };
     </script>
 </body>

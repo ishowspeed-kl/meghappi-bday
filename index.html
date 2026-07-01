@@ -6,13 +6,13 @@
     <title>Top Secret Access</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { height: 100vh; background: #05020a; display: flex; justify-content: center; align-items: center; color: white; overflow: hidden; position: relative; }
+        body { height: 100vh; background: #05020a; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; overflow: hidden; position: relative; }
         
-        /* The 3D Heart Canvas Background */
-        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        /* The 3D Heart Canvas Background - Forcing it visible */
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
 
-        /* Content Box Container staying on top */
-        .container-box { position: relative; z-index: 5; background: rgba(11, 9, 20, 0.88); backdrop-filter: blur(8px); border: 1px solid rgba(255, 117, 140, 0.2); padding: 35px; border-radius: 20px; box-shadow: 0 0 30px rgba(255, 117, 140, 0.2); text-align: center; max-width: 450px; width: 90%; transition: all 0.5s ease; }
+        /* Content Box Container staying underneath or blending nicely */
+        .container-box { position: relative; z-index: 5; background: rgba(11, 9, 20, 0.9); backdrop-filter: blur(8px); border: 1px solid rgba(255, 117, 140, 0.2); padding: 35px; border-radius: 20px; box-shadow: 0 0 30px rgba(255, 117, 140, 0.2); text-align: center; max-width: 450px; width: 90%; transition: all 0.5s ease; }
 
         /* Lock Screen */
         #lock-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; }
@@ -34,10 +34,10 @@
         #letter-text { font-size: 1.1rem; line-height: 1.8; font-style: italic; min-height: 150px; font-weight: 500; }
         .next-btn { display: none; margin: 25px auto 0 auto; background: #ff758c; color: white; }
 
-        /* Final Display Wishes Screen */
+        /* Final Display Wishes Screen - Shifted to make room for heart */
         #gallery-screen { display: none; }
-        .gallery-title { font-size: 2.2rem; color: #ff758c; margin-bottom: 20px; text-shadow: 0 0 15px rgba(255,117,140,0.6); }
-        p { font-size: 1.1rem; color: #f0e6ef; line-height: 1.6; }
+        .gallery-title { font-size: 2rem; color: #ff758c; margin-bottom: 15px; text-shadow: 0 0 15px rgba(255,117,140,0.6); }
+        p { font-size: 1.05rem; color: #f0e6ef; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -68,13 +68,13 @@
 
         <div id="gallery-screen">
             <h1 class="gallery-title">Happy Birthday, MEGHAPPI! 🎉💖</h1>
-            <p>Look at the background! A mathematical matrix calculated completely out of love strings just for you. You make my entire universe spin. Have the most magical day! ❤️🎂</p>
+            <p>Look behind this message! A mathematical shape made entirely from love text just for you. Have the most magical day! ❤️🎂</p>
         </div>
 
     </div>
 
     <script>
-        // --- 3D SPINNING TEXT HEART CORE ENGINE ---
+        // --- 3D SPINNING TEXT HEART ENGINE ---
         const canvas = document.getElementById('heartCanvas');
         const ctx = canvas.getContext('2d');
 
@@ -85,59 +85,52 @@
         resize();
         window.addEventListener('resize', resize);
 
-        // This is the phrase that constructs the entire mathematical shape!
-        const textPhrase = " I Love U Meghappi ";
+        const textPhrase = " I Love U Meghappi";
         let phraseIndex = 0;
         let rotationAngle = 0;
-        let isHeartRevealed = false; // Controls background transformation state
+        let isHeartRevealed = false;
 
         function drawSpinningHeart() {
-            ctx.fillStyle = "rgba(5, 2, 10, 0.3)"; // Creates a motion blur trailing effect
+            // Clears canvas beautifully while leaving subtle text trace lines
+            ctx.fillStyle = "rgba(5, 2, 10, 0.25)"; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
             
-            // Scaler adjusts dynamically for mobile versus computer screen widths
-            const baseScale = Math.min(canvas.width, canvas.height) / (isHeartRevealed ? 22 : 32);
+            // Adjust heart vertical placement dynamically depending on reveal phase
+            const centerY = isHeartRevealed ? (canvas.height / 2) : (canvas.height / 2);
+            
+            // Scaling engine optimized strictly for phone widths versus computer screens
+            const baseScale = Math.min(canvas.width, canvas.height) / (isHeartRevealed ? 24 : 32);
 
             ctx.font = "bold 11px monospace";
             phraseIndex = 0;
 
-            // Generate parametric layout mapping coordinates
-            for (let angle = 0; angle < Math.PI * 2; angle += 0.03) {
+            for (let angle = 0; angle < Math.PI * 2; angle += 0.04) {
                 
-                // Classic heart shape geometry equations
                 const xCoordinate = 16 * Math.pow(Math.sin(angle), 3);
                 const yCoordinate = -(13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle));
 
-                // Apply 3D rotation math simulation over time
-                const rotatedX = xCoordinate * Math.cos(rotationAngle) - yCoordinate * Math.sin(rotationAngle) * 0.3;
+                // 3D Matrix spinning rotation variables
+                const rotatedX = xCoordinate * Math.cos(rotationAngle) - yCoordinate * Math.sin(rotationAngle) * 0.2;
                 const rotatedY = yCoordinate * Math.cos(rotationAngle) * 0.8 + xCoordinate * Math.sin(rotationAngle) * 0.2;
 
-                // Position tracking vectors
                 const screenX = centerX + rotatedX * baseScale;
                 const screenY = centerY + rotatedY * baseScale;
 
-                // Grab character string segment looping consecutively
                 const charToPrint = textPhrase[phraseIndex % textPhrase.length];
                 phraseIndex++;
 
-                // Give it a glowing neon pink styling look
-                ctx.fillStyle = `hsl(${340 + Math.sin(rotationAngle + angle) * 15}, 100%, 70%)`;
-                ctx.shadowColor = "#ff758c";
-                ctx.shadowBlur = isHeartRevealed ? 8 : 2;
-
+                // Beautiful glowing pink styling
+                ctx.fillStyle = `hsl(${340 + Math.sin(rotationAngle + angle) * 15}, 100%, 72%)`;
                 ctx.fillText(charToPrint, screenX, screenY);
             }
 
-            rotationAngle += 0.015; // Speed of the rotation loop
+            rotationAngle += 0.02; // Speed multiplier
             requestAnimationFrame(drawSpinningHeart);
         }
         
-        // Start rendering background computation loop right away silently
         requestAnimationFrame(drawSpinningHeart);
-
 
         // --- INTERACTIVE SYSTEM CARD LOGIC ---
         const messageText = "Dearest Meghappi... \n\nHappy Birthday to the most amazing girl in the entire universe. 🎂✨ \n\nYou make every single day brighter just by being in it. Your laughter is my favorite sound, and your happiness means everything to me. Here's to celebrating you today, your beautiful heart, and making countless more gorgeous memories together. \n\nI love you! ❤️";
@@ -154,18 +147,18 @@
             }
         }
 
-        // 1. Password Verification
+        // 1. Passcode Input Check
         document.getElementById("unlockBtn").onclick = function() {
             var val = document.getElementById("password").value.trim();
             if (val === "18012007") {
                 document.getElementById("lock-screen").style.display = "none";
                 document.getElementById("envelope-container").style.display = "block";
             } else {
-                document.getElementById("error-msg").innerText = "❌ Password incorrect! Try again, love!";
+                document.getElementById("error-msg").innerText = "❌ Try again, love!";
             }
         };
 
-        // 2. Open Letter Envelope Click
+        // 2. Envelope Triggers Letter Sequence
         document.getElementById("mainEnvelope").onclick = function() {
             this.classList.add("open");
             setTimeout(() => {
@@ -175,15 +168,19 @@
             }, 800);
         };
 
-        // 3. Switch to final wishes screen and change heart state
+        // 3. Move to target final screen & rearrange elements for heart view
         document.getElementById("toGalleryBtn").onclick = function() {
             document.getElementById("letter-box").style.display = "none";
             document.getElementById("gallery-screen").style.display = "block";
             
-            // Shrink the middle box to let the massive text-heart pop out!
-            document.getElementById("mainCard").style.background = "rgba(11, 9, 20, 0.4)";
-            document.getElementById("mainCard").style.transform = "translateY(-50px)";
-            isHeartRevealed = true; // Makes the text heart grow huge and glow intensely
+            // CRUCIAL: Makes card box highly transparent and shoves it to the very bottom 
+            // of the screen, so the giant glowing text heart can take center stage!
+            document.getElementById("mainCard").style.background = "rgba(11, 9, 20, 0.2)";
+            document.getElementById("mainCard").style.border = "1px solid rgba(255, 117, 140, 0.1)";
+            document.getElementById("mainCard").style.position = "absolute";
+            document.getElementById("mainCard").style.bottom = "30px";
+            
+            isHeartRevealed = true; // Signals rendering loop to expand the heart shape
         };
     </script>
 </body>

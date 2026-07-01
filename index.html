@@ -6,20 +6,20 @@
     <title>Top Secret Access</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { height: 100vh; background: #05020a; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; overflow: hidden; position: relative; }
+        body { height: 100vh; background: #0b0813; display: flex; justify-content: center; align-items: center; color: white; overflow: hidden; position: relative; }
         
-        /* The 3D Heart Canvas Background - Forcing it visible */
-        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+        /* The Growing Flowers Canvas Background */
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
-        /* Content Box Container staying underneath or blending nicely */
-        .container-box { position: relative; z-index: 5; background: rgba(11, 9, 20, 0.9); backdrop-filter: blur(8px); border: 1px solid rgba(255, 117, 140, 0.2); padding: 35px; border-radius: 20px; box-shadow: 0 0 30px rgba(255, 117, 140, 0.2); text-align: center; max-width: 450px; width: 90%; transition: all 0.5s ease; }
+        /* Content Card Container staying on top */
+        .container-box { position: relative; z-index: 5; background: rgba(11, 9, 20, 0.88); backdrop-filter: blur(8px); border: 1px solid rgba(255, 117, 140, 0.2); padding: 35px; border-radius: 20px; box-shadow: 0 0 30px rgba(255, 117, 140, 0.2); text-align: center; max-width: 450px; width: 90%; transition: all 0.5s ease; }
 
-        /* Lock Screen */
+        /* Lock Screen Layout */
         #lock-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; }
         h2 { font-size: 1.6rem; margin-bottom: 20px; color: #ff758c; text-shadow: 0 0 15px rgba(255,117,140,0.6); font-family: monospace; letter-spacing: 2px; }
-        input { padding: 14px; font-size: 1.3rem; border: 2px solid #ff758c; border-radius: 30px; text-align: center; margin-bottom: 20px; width: 260px; background: rgba(0,0,0,0.6); color: #ff9ebb; outline: none; box-shadow: 0 0 10px rgba(255,117,140,0.2); font-family: monospace; }
+        input { padding: 14px; font-size: 1.3rem; border: 2px solid #ff758c; border-radius: 30px; text-align: center; margin-bottom: 20px; width: 260px; background: rgba(0,0,0,0.6); color: #ff9ebb; outline: none; font-family: monospace; }
         button { padding: 14px 35px; font-size: 1.1rem; background: linear-gradient(45deg, #ff758c, #ff7eb3); border: none; color: white; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(255,117,140,0.4); transition: 0.3s; }
-        button:hover { transform: scale(1.05); box-shadow: 0 5px 25px rgba(255,117,140,0.7); }
+        button:hover { transform: scale(1.05); }
         #error-msg { color: #ff4757; margin-top: 15px; font-weight: bold; font-family: monospace; }
 
         /* Interactive Envelope Step */
@@ -34,18 +34,21 @@
         #letter-text { font-size: 1.1rem; line-height: 1.8; font-style: italic; min-height: 150px; font-weight: 500; }
         .next-btn { display: none; margin: 25px auto 0 auto; background: #ff758c; color: white; }
 
-        /* Final Display Wishes Screen - Shifted to make room for heart */
+        /* Final Display Wishes Screen Layout */
         #gallery-screen { display: none; }
-        .gallery-title { font-size: 2rem; color: #ff758c; margin-bottom: 15px; text-shadow: 0 0 15px rgba(255,117,140,0.6); }
-        p { font-size: 1.05rem; color: #f0e6ef; line-height: 1.6; }
+        .gallery-title { font-size: 2.1rem; color: #ff758c; margin-bottom: 15px; text-shadow: 0 0 15px rgba(255,117,140,0.6); }
+        p { font-size: 1.1rem; color: #f0e6ef; line-height: 1.6; }
     </style>
 </head>
 <body>
 
-    <canvas id="heartCanvas"></canvas>
+    <!-- GROWING FLOWER CANVAS ENGINE -->
+    <canvas id="flowerCanvas"></canvas>
 
+    <!-- CONTENT BOX HOUSING CARD STATES -->
     <div class="container-box" id="mainCard">
         
+        <!-- 1. PASSCODE SCREEN -->
         <div id="lock-screen">
             <h2>🔒 ENTER ACCESS CODE</h2>
             <input type="text" id="password" pattern="[0-9]*" inputmode="numeric" placeholder="DDMMYYYY">
@@ -53,29 +56,32 @@
             <div id="error-msg"></div>
         </div>
 
+        <!-- 2. INTERACTIVE ENVELOPE CONTAINER -->
         <div id="envelope-container">
             <h2 style="margin-bottom: 10px;">Message Received! 💌</h2>
-            <p style="color: #bfaec2; margin-bottom: 20px; font-size: 0.95rem;">Tap envelope to open</p>
+            <p style="color: #bfaec2; margin-bottom: 20px; font-size: 0.95rem;">Tap envelope to view</p>
             <div class="envelope" id="mainEnvelope">
                 <div class="envelope-text">FOR MEGHAPPI ❤️</div>
             </div>
         </div>
 
+        <!-- 3. TYPEWRITER LETTER BOX -->
         <div id="letter-box">
             <div id="letter-text"></div>
-            <button class="next-btn" id="toGalleryBtn">Click for Final Surprise ➔</button>
+            <button class="next-btn" id="toGalleryBtn">Grow Your Gift ➔</button>
         </div>
 
+        <!-- 4. FINAL CELEBRATION WISHES -->
         <div id="gallery-screen">
-            <h1 class="gallery-title">Happy Birthday, MEGHAPPI! 🎉💖</h1>
-            <p>Look behind this message! A mathematical shape made entirely from love text just for you. Have the most magical day! ❤️🎂</p>
+            <h1 class="gallery-title">Happy Birthday, MEGHAPPI! 🎉💐</h1>
+            <p>Some people give physical flowers that fade away... but these digital ones will bloom on the internet for you forever. Have the most wonderful birthday! ❤️✨</p>
         </div>
 
     </div>
 
     <script>
-        // --- 3D SPINNING TEXT HEART ENGINE ---
-        const canvas = document.getElementById('heartCanvas');
+        // --- PROCCEDURAL GROWING FLOWERS GENERATOR ---
+        const canvas = document.getElementById('flowerCanvas');
         const ctx = canvas.getContext('2d');
 
         function resize() {
@@ -85,54 +91,133 @@
         resize();
         window.addEventListener('resize', resize);
 
-        const textPhrase = " I Love U Meghappi";
-        let phraseIndex = 0;
-        let rotationAngle = 0;
-        let isHeartRevealed = false;
+        let animationFrameId;
+        let flowerGrowthProgress = 0;
+        let isFlowerTriggered = false;
+        let fireflies = [];
 
-        function drawSpinningHeart() {
-            // Clears canvas beautifully while leaving subtle text trace lines
-            ctx.fillStyle = "rgba(5, 2, 10, 0.25)"; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Setup starry night/spark coordinates
+        for(let i=0; i<30; i++) {
+            fireflies.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                radius: Math.random() * 2 + 1,
+                speedY: Math.random() * 0.5 + 0.2,
+                alpha: Math.random()
+            });
+        }
 
-            const centerX = canvas.width / 2;
-            
-            // Adjust heart vertical placement dynamically depending on reveal phase
-            const centerY = isHeartRevealed ? (canvas.height / 2) : (canvas.height / 2);
-            
-            // Scaling engine optimized strictly for phone widths versus computer screens
-            const baseScale = Math.min(canvas.width, canvas.height) / (isHeartRevealed ? 24 : 32);
+        function drawFlowerSystem() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            ctx.font = "bold 11px monospace";
-            phraseIndex = 0;
+            // 1. Draw glowing background firefly particles
+            fireflies.forEach(p => {
+                p.y -= p.speedY;
+                if(p.y < 0) p.y = canvas.height;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
+                ctx.fillStyle = `rgba(255, 220, 150, ${Math.sin(Date.now()/500 + p.alpha)})`;
+                ctx.fill();
+            });
 
-            for (let angle = 0; angle < Math.PI * 2; angle += 0.04) {
-                
-                const xCoordinate = 16 * Math.pow(Math.sin(angle), 3);
-                const yCoordinate = -(13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle));
-
-                // 3D Matrix spinning rotation variables
-                const rotatedX = xCoordinate * Math.cos(rotationAngle) - yCoordinate * Math.sin(rotationAngle) * 0.2;
-                const rotatedY = yCoordinate * Math.cos(rotationAngle) * 0.8 + xCoordinate * Math.sin(rotationAngle) * 0.2;
-
-                const screenX = centerX + rotatedX * baseScale;
-                const screenY = centerY + rotatedY * baseScale;
-
-                const charToPrint = textPhrase[phraseIndex % textPhrase.length];
-                phraseIndex++;
-
-                // Beautiful glowing pink styling
-                ctx.fillStyle = `hsl(${340 + Math.sin(rotationAngle + angle) * 15}, 100%, 72%)`;
-                ctx.fillText(charToPrint, screenX, screenY);
+            if (!isFlowerTriggered) {
+                animationFrameId = requestAnimationFrame(drawFlowerSystem);
+                return;
             }
 
-            rotationAngle += 0.02; // Speed multiplier
-            requestAnimationFrame(drawSpinningHeart);
-        }
-        
-        requestAnimationFrame(drawSpinningHeart);
+            if (flowerGrowthProgress < 1) flowerGrowthProgress += 0.006; // Growth speed
 
-        // --- INTERACTIVE SYSTEM CARD LOGIC ---
+            const startX = canvas.width / 2;
+            const startY = canvas.height;
+            const maxHeight = canvas.height * 0.55;
+
+            // Definition metrics for 3 distinct glowing stems
+            const stems = [
+                { targetX: startX - 60, targetY: canvas.height - maxHeight * 0.8, controlX: startX - 30, color: "#2d6a4f" },
+                { targetX: startX, targetY: canvas.height - maxHeight, controlX: startX, color: "#1b4332" },
+                { targetX: startX + 60, targetY: canvas.height - maxHeight * 0.85, controlX: startX + 30, color: "#2d6a4f" }
+            ];
+
+            stems.forEach((stem) => {
+                // Calculate current coordinates dynamically based on growth stage factor
+                const currentY = startY - (startY - stem.targetY) * flowerGrowthProgress;
+                const currentX = startX + (stem.targetX - startX) * flowerGrowthProgress;
+
+                // Draw Stems
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.quadraticCurveTo(stem.controlX, (startY + currentY)/2, currentX, currentY);
+                ctx.strokeStyle = stem.color;
+                ctx.lineWidth = 5;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+
+                // Draw decorative leaves along the paths
+                if (flowerGrowthProgress > 0.4) {
+                    ctx.fillStyle = "#40916c";
+                    ctx.beginPath();
+                    ctx.ellipse(startX + (currentX - startX)*0.5 - 15, startY - (startY - currentY)*0.5, 12, 6, -Math.PI/4, 0, Math.PI*2);
+                    ctx.ellipse(startX + (currentX - startX)*0.6 + 15, startY - (startY - currentY)*0.6, 12, 6, Math.PI/4, 0, Math.PI*2);
+                    ctx.fill();
+                }
+
+                // Bloom flower blossom petals when growth reaches near termination threshold
+                if (flowerGrowthProgress >= 0.95) {
+                    drawBlossom(currentX, currentY);
+                }
+            });
+
+            animationFrameId = requestAnimationFrame(drawFlowerSystem);
+        }
+
+        function drawBlossom(cx, cy) {
+            ctx.save();
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = "#ff758c";
+
+            // Draw glowing outer background aura glow halo ring
+            ctx.beginPath();
+            ctx.arc(cx, cy, 25, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(255, 117, 140, 0.15)";
+            ctx.fill();
+
+            // Draw individual overlapping round petals sequentially
+            const totalPetals = 5;
+            ctx.fillStyle = "#ff758c";
+            for (let i = 0; i < totalPetals; i++) {
+                ctx.beginPath();
+                const angle = (i * 2 * Math.PI) / totalPetals;
+                const petalX = cx + Math.cos(angle) * 14;
+                const petalY = cy + Math.sin(angle) * 14;
+                ctx.arc(petalX, petalY, 12, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Draw internal lighter core petal accents
+            ctx.fillStyle = "#ff9ebb";
+            for (let i = 0; i < totalPetals; i++) {
+                ctx.beginPath();
+                const angle = (i * 2 * Math.PI) / totalPetals;
+                const petalX = cx + Math.cos(angle) * 8;
+                const petalY = cy + Math.sin(angle) * 8;
+                ctx.arc(petalX, petalY, 8, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Bright glowing yellow stamen center core point
+            ctx.beginPath();
+            ctx.arc(cx, cy, 7, 0, Math.PI * 2);
+            ctx.fillStyle = "#ffeaa7";
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Run baseline firefly canvas processing looping instantly
+        requestAnimationFrame(drawFlowerSystem);
+
+
+        // --- INTERACTIVE ENGINE DEPLOYMENT SEQUENCERS ---
         const messageText = "Dearest Meghappi... \n\nHappy Birthday to the most amazing girl in the entire universe. 🎂✨ \n\nYou make every single day brighter just by being in it. Your laughter is my favorite sound, and your happiness means everything to me. Here's to celebrating you today, your beautiful heart, and making countless more gorgeous memories together. \n\nI love you! ❤️";
         
         let index = 0;
@@ -147,18 +232,18 @@
             }
         }
 
-        // 1. Passcode Input Check
+        // 1. Password Verification
         document.getElementById("unlockBtn").onclick = function() {
             var val = document.getElementById("password").value.trim();
             if (val === "18012007") {
                 document.getElementById("lock-screen").style.display = "none";
                 document.getElementById("envelope-container").style.display = "block";
             } else {
-                document.getElementById("error-msg").innerText = "❌ Try again, love!";
+                document.getElementById("error-msg").innerText = "❌ Code incorrect! Try again, love!";
             }
         };
 
-        // 2. Envelope Triggers Letter Sequence
+        // 2. Open Letter Click Sequence
         document.getElementById("mainEnvelope").onclick = function() {
             this.classList.add("open");
             setTimeout(() => {
@@ -168,19 +253,17 @@
             }, 800);
         };
 
-        // 3. Move to target final screen & rearrange elements for heart view
+        // 3. Complete Final Transition & Trigger Growing Flower Function
         document.getElementById("toGalleryBtn").onclick = function() {
             document.getElementById("letter-box").style.display = "none";
             document.getElementById("gallery-screen").style.display = "block";
             
-            // CRUCIAL: Makes card box highly transparent and shoves it to the very bottom 
-            // of the screen, so the giant glowing text heart can take center stage!
-            document.getElementById("mainCard").style.background = "rgba(11, 9, 20, 0.2)";
-            document.getElementById("mainCard").style.border = "1px solid rgba(255, 117, 140, 0.1)";
+            // Reposition and semi-transparent the layout text box so she can watch the beautiful flowers grow
+            document.getElementById("mainCard").style.background = "rgba(11, 9, 20, 0.4)";
             document.getElementById("mainCard").style.position = "absolute";
-            document.getElementById("mainCard").style.bottom = "30px";
+            document.getElementById("mainCard").style.top = "40px";
             
-            isHeartRevealed = true; // Signals rendering loop to expand the heart shape
+            isFlowerTriggered = true; // Launches the growth drawing loop
         };
     </script>
 </body>

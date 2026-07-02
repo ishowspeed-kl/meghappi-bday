@@ -6,52 +6,54 @@
     <title>Top Secret Access</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { height: 100vh; background: #0b0914; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; overflow: hidden; position: relative; }
+        body { height: 100vh; background: #05020a; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; overflow: hidden; position: relative; }
         
-        /* --- CSS GROWING & BLOWING GARDEN LAYOUT --- */
+        /* --- LUSH REALISTIC BLOWING FLOWER GARDEN --- */
         .garden { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; z-index: 2; display: none; pointer-events: none; }
 
-        /* The Flower Structure */
-        .flower { position: absolute; bottom: 0; transform-origin: bottom center; animation: sway 4s ease-in-out infinite alternate; }
+        /* Flower core setup with natural wind sway */
+        .flower { position: absolute; bottom: -20px; transform-origin: bottom center; animation: windBlow 5s ease-in-out infinite alternate; }
         
-        /* Stems growing animation */
-        .stem { width: 6px; background: linear-gradient(to top, #134e4a, #10b981); margin: 0 auto; border-radius: 4px; animation: growStem 3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        /* Deep, thick stems */
+        .stem { width: 10px; background: linear-gradient(to top, #064e3b, #059669); margin: 0 auto; border-radius: 6px; animation: growStem 4s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
 
-        /* Petals expanding animation */
-        .blooming-head { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%) scale(0); border-radius: 50%; animation: bloom 2s 2.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; display: flex; justify-content: center; align-items: center; }
+        /* Deeply layered, volumetric flower heads */
+        .blooming-head { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%) scale(0); animation: bloomPerfect 2.5s 3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 
-        /* Flower Variety 1: Deep Red Rose style */
-        .flower-rose .stem { height: 280px; }
-        .flower-rose .blooming-head { width: 75px; height: 75px; background: radial-gradient(circle, #ff1744, #b71c1c); box-shadow: 0 0 25px rgba(255, 23, 68, 0.6); }
-        .flower-rose .blooming-head::after { content: '🌹'; font-size: 2.2rem; }
+        /* --- TYPE 1: BIG LUXURY RED ROSE (Layered Petals) --- */
+        .flower-rose .stem { height: 350px; }
+        .flower-rose .blooming-head { width: 140px; height: 140px; }
+        
+        /* Outer Petals */
+        .rose-petal-1 { position: absolute; width: 100%; height: 100%; background: radial-gradient(circle at 50% 40%, #ff1744, #7f0000); border-radius: 50% 50% 45% 45%; box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 10px 30px rgba(255, 23, 68, 0.5); }
+        /* Middle Petals (Rotated for depth) */
+        .rose-petal-2 { position: absolute; width: 80%; height: 80%; top: 10%; left: 10%; background: radial-gradient(circle at 50% 30%, #ff4081, #b71c1c); border-radius: 50%; transform: rotate(45deg); box-shadow: inset 0 0 15px rgba(0,0,0,0.6); }
+        /* Center Core */
+        .rose-center { position: absolute; width: 45%; height: 45%; top: 27.5%; left: 27.5%; background: radial-gradient(circle, #ff85a2, #d50000); border-radius: 50%; transform: rotate(-20deg); box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
 
-        /* Flower Variety 2: Pink Cherry Blossom style */
-        .flower-pink .stem { height: 220px; width: 5px; background: linear-gradient(to top, #14532d, #22c55e); }
-        .flower-pink .blooming-head { width: 65px; height: 65px; background: radial-gradient(circle, #ff758c, #ff7eb3); box-shadow: 0 0 20px rgba(255, 117, 140, 0.7); }
-        .flower-pink .blooming-head::after { content: '🌸'; font-size: 1.9rem; }
+        /* --- TYPE 2: BIG GLOWING PINK BLOSSOM --- */
+        .flower-pink .stem { height: 280px; width: 8px; background: linear-gradient(to top, #14532d, #10b981); }
+        .flower-pink .blooming-head { width: 120px; height: 120px; }
+        .pink-petal-outer { position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, #ff758c 20%, #ff7eb3 70%, #fa709a 100%); border-radius: 40% 60% 40% 60% / 60% 40% 60% 40%; transform: rotate(15deg); box-shadow: 0 10px 25px rgba(255, 117, 140, 0.6); filter: hue-rotate(10deg); }
+        .pink-petal-inner { position: absolute; width: 70%; height: 70%; top: 15%; left: 15%; background: #fff0f5; border-radius: 50%; opacity: 0.9; background: radial-gradient(circle, #ffffff, #ffb6c1); box-shadow: inset 0 0 10px rgba(250,112,154,0.5); }
 
-        /* Flower Variety 3: White Jasmine style */
-        .flower-jasmine .stem { height: 180px; width: 4px; }
-        .flower-jasmine .blooming-head { width: 55px; height: 55px; background: radial-gradient(circle, #ffffff, #f0e6ef); box-shadow: 0 0 20px rgba(255, 255, 255, 0.8); }
-        .flower-jasmine .blooming-head::after { content: '💮'; font-size: 1.6rem; }
+        /* --- REALISTIC WIDE LEAVES --- */
+        .leaf { position: absolute; background: linear-gradient(135deg, #059669, #047857); border-radius: 100% 0 100% 0; transform: scale(0); transform-origin: left bottom; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .leaf-left { width: 55px; height: 30px; left: -50px; transform: rotate(-25deg); animation: leafPop 2s 2s forwards; }
+        .leaf-right { width: 55px; height: 30px; right: -50px; transform: scaleX(-1) rotate(-25deg); transform-origin: right bottom; animation: leafPop 2s 2.3s forwards; }
 
-        /* Flower Leaves */
-        .leaf { position: absolute; width: 25px; height: 15px; background: #10b981; border-radius: 15px 0; transform: scale(0); transform-origin: left center; }
-        .leaf-left { left: -22px; transform: rotate(-35deg); animation: leafGrow 1.5s 1.5s forwards; }
-        .leaf-right { right: -22px; transform: scaleX(-1) rotate(-35deg); animation: leafGrow 1.5s 1.8s forwards; }
+        /* --- MESSAGE INTERFACE CARD --- */
+        .container-box { position: relative; z-index: 5; background: rgba(10, 6, 20, 0.93); backdrop-filter: blur(12px); border: 1px solid rgba(255, 117, 140, 0.25); padding: 35px; border-radius: 25px; box-shadow: 0 0 35px rgba(255, 117, 140, 0.25); text-align: center; max-width: 450px; width: 90%; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
-        /* --- SURPRISE CONTENT INTERFACE CARD --- */
-        .container-box { position: relative; z-index: 5; background: rgba(11, 9, 20, 0.92); backdrop-filter: blur(10px); border: 1px solid rgba(255, 117, 140, 0.2); padding: 35px; border-radius: 20px; box-shadow: 0 0 30px rgba(255, 117, 140, 0.2); text-align: center; max-width: 450px; width: 90%; transition: all 0.6s ease; }
-
-        /* Passcode Lock elements */
+        /* UI Styling Components */
         #lock-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; }
         h2 { font-size: 1.6rem; margin-bottom: 20px; color: #ff758c; text-shadow: 0 0 15px rgba(255,117,140,0.6); font-family: monospace; letter-spacing: 2px; }
-        input { padding: 14px; font-size: 1.3rem; border: 2px solid #ff758c; border-radius: 30px; text-align: center; margin-bottom: 20px; width: 260px; background: rgba(0,0,0,0.6); color: #ff9ebb; outline: none; box-shadow: 0 0 10px rgba(255,117,140,0.2); font-family: monospace; }
-        button { padding: 14px 35px; font-size: 1.1rem; background: linear-gradient(45deg, #ff758c, #ff7eb3); border: none; color: white; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(255,117,140,0.4); transition: 0.3s; }
-        button:hover { transform: scale(1.05); box-shadow: 0 5px 25px rgba(255,117,140,0.7); }
+        input { padding: 14px; font-size: 1.3rem; border: 2px solid #ff758c; border-radius: 30px; text-align: center; margin-bottom: 20px; width: 260px; background: rgba(0,0,0,0.7); color: #ff9ebb; outline: none; font-family: monospace; }
+        button { padding: 14px 35px; font-size: 1.1rem; background: linear-gradient(45deg, #ff758c, #ff7eb3); border: none; color: white; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 20px rgba(255,117,140,0.4); transition: 0.3s; }
+        button:hover { transform: scale(1.05); box-shadow: 0 5px 30px rgba(255,117,140,0.8); }
         #error-msg { color: #ff4757; margin-top: 15px; font-weight: bold; font-family: monospace; }
 
-        /* Envelope */
+        /* Envelope Step */
         #envelope-container { display: none; }
         .envelope { width: 260px; height: 160px; background: #ff758c; position: relative; border-radius: 0 0 10px 10px; cursor: pointer; box-shadow: 0 15px 30px rgba(0,0,0,0.5); margin: 20px auto; transition: 0.5s; }
         .envelope::before { content: ''; position: absolute; top: 0; left: 0; border-left: 130px solid transparent; border-right: 130px solid transparent; border-top: 90px solid #ff9ebb; transform-origin: top; transition: transform 0.5s; z-index: 3; }
@@ -63,58 +65,83 @@
         #letter-text { font-size: 1.1rem; line-height: 1.8; font-style: italic; min-height: 150px; font-weight: 500; }
         .next-btn { display: none; margin: 25px auto 0 auto; background: #ff758c; color: white; }
 
-        /* Final Display Wishes Screen */
+        /* Final Wishes Text Layout */
         #gallery-screen { display: none; }
         .gallery-title { font-size: 2rem; color: #ff758c; margin-bottom: 15px; text-shadow: 0 0 15px rgba(255,117,140,0.6); }
         p { font-size: 1.05rem; color: #f0e6ef; line-height: 1.6; }
 
-        /* --- ANIMATION KEYFRAMES --- */
+        /* --- ENGINE PHYSICS KEYFRAMES --- */
         @keyframes growStem { from { height: 0; } }
-        @keyframes bloom { to { transform: translate(-50%, -50%) scale(1); } }
-        @keyframes leafGrow { to { transform: rotate(-35deg) scale(1); } }
-        @keyframes sway {
-            0% { transform: rotate(-4deg); }
-            100% { transform: rotate(4deg); }
+        @keyframes bloomPerfect { to { transform: translate(-50%, -50%) scale(1); } }
+        @keyframes leafPop { to { transform: scale(1) rotate(-25deg); } }
+        @keyframes windBlow {
+            0% { transform: rotate(-5deg) skewX(-2deg); }
+            100% { transform: rotate(6deg) skewX(3deg); }
         }
     </style>
 </head>
 <body>
 
-    <!-- DIGITAL BLOWING FLOWER GARDEN BACKGROUND -->
+    <!-- REALISTIC ENGINE-DRIVEN FLOWER GARDEN -->
     <div class="garden" id="flowerGarden">
-        <!-- Left Side Flower Group -->
-        <div class="flower flower-rose" style="left: 8%; animation-delay: 0.2s;">
-            <div class="stem"><div class="leaf leaf-left" style="top: 100px;"></div><div class="leaf leaf-right" style="top: 160px;"></div></div>
-            <div class="blooming-head"></div>
-        </div>
-        <div class="flower flower-jasmine" style="left: 18%; animation-delay: 0.7s;">
-            <div class="stem"><div class="leaf leaf-left" style="top: 60px;"></div></div>
-            <div class="blooming-head"></div>
-        </div>
-
-        <!-- Middle Background Rows -->
-        <div class="flower flower-pink" style="left: 32%; animation-delay: 0.4s; opacity: 0.9;">
-            <div class="stem"><div class="leaf leaf-right" style="top: 90px;"></div></div>
-            <div class="blooming-head"></div>
-        </div>
-        <div class="flower flower-rose" style="left: 48%; animation-delay: 0.1s;">
-            <div class="stem"><div class="leaf leaf-left" style="top: 120px;"></div><div class="leaf leaf-right" style="top: 70px;"></div></div>
-            <div class="blooming-head"></div>
-        </div>
-        <div class="flower flower-jasmine" style="left: 62%; animation-delay: 0.9s;">
-            <div class="stem"><div class="leaf leaf-right" style="top: 80px;"></div></div>
-            <div class="blooming-head"></div>
+        
+        <!-- Big Red Rose Left Side -->
+        <div class="flower flower-rose" style="left: -5%; animation-delay: 0s; animation-duration: 5.5s;">
+            <div class="stem">
+                <div class="leaf leaf-left" style="top: 140px;"></div>
+                <div class="leaf leaf-right" style="top: 220px;"></div>
+            </div>
+            <div class="blooming-head">
+                <div class="rose-petal-1"></div>
+                <div class="rose-petal-2"></div>
+                <div class="rose-center"></div>
+            </div>
         </div>
 
-        <!-- Right Side Flower Group -->
-        <div class="flower flower-pink" style="left: 76%; animation-delay: 0.5s;">
-            <div class="stem"><div class="leaf leaf-left" style="top: 110px;"></div></div>
-            <div class="blooming-head"></div>
+        <!-- Giant Pink Blossom Left-Center -->
+        <div class="flower flower-pink" style="left: 15%; animation-delay: 0.6s; animation-duration: 4.8s;">
+            <div class="stem"><div class="leaf leaf-left" style="top: 120px;"></div></div>
+            <div class="blooming-head">
+                <div class="pink-petal-outer"></div>
+                <div class="pink-petal-inner"></div>
+            </div>
         </div>
-        <div class="flower flower-rose" style="left: 88%; animation-delay: 0.3s;">
-            <div class="stem"><div class="leaf leaf-left" style="top: 140px;"></div><div class="leaf leaf-right" style="top: 80px;"></div></div>
-            <div class="blooming-head"></div>
+
+        <!-- Huge Red Rose Center Background -->
+        <div class="flower flower-rose" style="left: 40%; animation-delay: 0.2s; animation-duration: 6s; opacity: 0.95; transform: scale(1.1);">
+            <div class="stem">
+                <div class="leaf leaf-left" style="top: 100px;"></div>
+                <div class="leaf leaf-right" style="top: 180px;"></div>
+            </div>
+            <div class="blooming-head">
+                <div class="rose-petal-1"></div>
+                <div class="rose-petal-2"></div>
+                <div class="rose-center"></div>
+            </div>
         </div>
+
+        <!-- Giant Pink Blossom Right-Center -->
+        <div class="flower flower-pink" style="left: 65%; animation-delay: 0.4s; animation-duration: 5.2s;">
+            <div class="stem"><div class="leaf leaf-right" style="top: 130px;"></div></div>
+            <div class="blooming-head">
+                <div class="pink-petal-outer"></div>
+                <div class="pink-petal-inner"></div>
+            </div>
+        </div>
+
+        <!-- Big Red Rose Far Right Side -->
+        <div class="flower flower-rose" style="left: 82%; animation-delay: 0.8s; animation-duration: 4.5s;">
+            <div class="stem">
+                <div class="leaf leaf-left" style="top: 150px;"></div>
+                <div class="leaf leaf-right" style="top: 210px;"></div>
+            </div>
+            <div class="blooming-head">
+                <div class="rose-petal-1"></div>
+                <div class="rose-petal-2"></div>
+                <div class="rose-center"></div>
+            </div>
+        </div>
+
     </div>
 
     <!-- MAIN INTERACTIVE INTERFACE CARD -->
@@ -146,7 +173,7 @@
         <!-- 4. FINAL SURPRISE SCREEN -->
         <div id="gallery-screen">
             <h1 class="gallery-title">Happy Birthday, MEGHAPPI! 🎉💖</h1>
-            <p>A digital garden grown entirely out of code for you. May your days always bloom with happiness and bright colors. Have the most beautiful birthday love! ❤️🎂</p>
+            <p>A custom digital garden grown beautifully out of code entirely for you. May your days always bloom with happiness, grace, and luxury. Have the most wonderful birthday love! ❤️🎂</p>
         </div>
 
     </div>
@@ -174,7 +201,7 @@
                 document.getElementById("lock-screen").style.display = "none";
                 document.getElementById("envelope-container").style.display = "block";
                 
-                // Immediately activate the CSS blowing flower garden!
+                // Immediately activate the massive realistic blowing flower garden background
                 document.getElementById("flowerGarden").style.display = "block";
             } else {
                 document.getElementById("error-msg").innerText = "❌ Try again, love!";
@@ -196,8 +223,8 @@
             document.getElementById("letter-box").style.display = "none";
             document.getElementById("gallery-screen").style.display = "block";
             
-            // Pushes the card up slightly and opens up transparency so she can see the full blowing garden
-            document.getElementById("mainCard").style.background = "rgba(11, 9, 20, 0.4)";
+            // Soften the center card container box so the gorgeous large luxury flowers pop out completely behind it
+            document.getElementById("mainCard").style.background = "rgba(10, 6, 20, 0.4)";
             document.getElementById("mainCard").style.position = "absolute";
             document.getElementById("mainCard").style.top = "40px";
         };
